@@ -17,6 +17,10 @@ app.use(cookieParser());
 
 app.use(router());
 
+app.use((req, res, next) => {
+  return next(createError(404, "Endpoint not Found!"));
+});
+
 app.use(errorHandler);
 
 export default app;

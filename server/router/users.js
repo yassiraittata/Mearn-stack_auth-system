@@ -1,5 +1,5 @@
+import { register } from "../controllers/authController";
+
 export default (router) => {
-  router.get("/login", (req, res, next) => {
-    res.send("Login");
-  });
+  router.get("/register", register);
 };
