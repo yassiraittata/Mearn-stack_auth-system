@@ -12,10 +12,10 @@ const app = express();
 // Middleware
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(router());
+app.use("/api", router());
 
 app.use((req, res, next) => {
   return next(createError(404, "Endpoint not Found!"));
