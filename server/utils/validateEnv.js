@@ -5,4 +5,8 @@ export default cleanEnv(process.env, {
   MONGO_URI: str(),
   JWT_SECRET: str(),
   NODE_ENV: str(),
+  SMTP_USER: str(),
+  SMTP_PASSWORD: str(),
+  HOSTNAME: str(),
+  SENDER_EMAIL: str(),
 });
