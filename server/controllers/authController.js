@@ -104,3 +104,32 @@ export const logout = (req, res, next) => {
   });
   res.json({ success: true });
 };
+
+export const sendVerifyOtp = async (req, res) => {
+  const { userId } = req.body;
+
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    return next(createError(400, "User was not found!"));
+  }
+
+  if (user.isAccountVerifired) {
+    return next(createError(400, "Account already verified"));
+  }
+
+  const otp = String(Math.floor(Math.random() * 900000 + 100000));
+
+  user.verifyOtp = otp;
+  user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
+
+  await user.save();
+
+  //   sending welcome Email
+  const mailOptions = {
+    from: env.SENDER_EMAIL,
+    to: user.email,
+    subject: "Account verification OTP",
+    text: "Your OTP is " + otp + ". Verify your account using this OTP",
+  };
+};
