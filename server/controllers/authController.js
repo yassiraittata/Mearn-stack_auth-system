@@ -111,10 +111,10 @@ export const sendVerifyOtp = async (req, res, next) => {
   const user = await UserModel.findById(userId);
 
   if (!user) {
-    return next(createError(400, "User was not found!"));
+    return next(createError(404, "User was not found!"));
   }
 
-  if (user.isAccountVerifired) {
+  if (user.isAccountVerified) {
     return next(createError(400, "Account already verified"));
   }
 
@@ -150,7 +150,7 @@ export const verfyEmail = async (req, res, next) => {
   const user = await UserModel.findById(userId);
 
   if (!user) {
-    return next(createError(400, "User was not found!"));
+    return next(createError(404, "User was not found!"));
   }
 
   if (user.verifyOtp === "" || user.verifyOtp !== otp) {
@@ -161,7 +161,7 @@ export const verfyEmail = async (req, res, next) => {
     return next(createError(400, "OTP Expired"));
   }
 
-  user.isAccountVerifired = true;
+  user.isAccountVerified = true;
   user.verifyOtp = "";
   user.verifyOtpExpireAt = 0;
 
