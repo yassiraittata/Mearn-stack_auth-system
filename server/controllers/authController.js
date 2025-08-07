@@ -172,3 +172,37 @@ export const verfyEmail = async (req, res, next) => {
 export const isAuthenticated = async (req, res, next) => {
   res.json({ success: true });
 };
+
+// Send Password reset OTP
+export const passwordResetOtpMiddleware = async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return next(createError(400, "Email is required"));
+  }
+
+  const user = await UserModel.findOne({ email });
+
+  if (!user) {
+    return next(createError(404, "User not found"));
+  }
+
+  // Generate OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  user.resetOtp = otp;
+  user.resetOtpExpireAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  await user.save();
+
+  // Send OTP email
+  const mailOptions = {
+    from: env.SENDER_EMAIL,
+    to: user.email,
+    subject: "Password Reset OTP",
+    text: `Your password reset OTP is ${otp}. It will expire in 10 minutes.`,
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  res.json({ success: true, message: "Password reset OTP sent to email" });
+};
