@@ -174,7 +174,7 @@ export const isAuthenticated = async (req, res, next) => {
 };
 
 // Send Password reset OTP
-export const passwordResetOtpMiddleware = async (req, res, next) => {
+export const sendRestOTP = async (req, res, next) => {
   const { email } = req.body;
 
   if (!email) {
@@ -205,4 +205,37 @@ export const passwordResetOtpMiddleware = async (req, res, next) => {
   await transporter.sendMail(mailOptions);
 
   res.json({ success: true, message: "Password reset OTP sent to email" });
+};
+
+// reset user password
+export const resetPassword = async (req, res, next) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    return next(createError(400, "Email, OTP, and new password are required"));
+  }
+
+  const user = await UserModel.findOne({ email });
+
+  if (!user) {
+    return next(createError(404, "User not found"));
+  }
+
+  if (!user.resetOtp || user.resetOtp !== otp) {
+    return next(createError(400, "Invalid OTP"));
+  }
+
+  if (user.resetOtpExpireAt < Date.now()) {
+    return next(createError(400, "Expired OTP"));
+  }
+
+  const hashedPw = await bcrypt.hash(newPassword, 12);
+
+  user.password = hashedPw;
+  user.resetOtp = "";
+  user.resetOtpExpireAt = 0;
+
+  await user.save();
+
+  res.json({ success: true, message: "Password reset successfully" });
 };
