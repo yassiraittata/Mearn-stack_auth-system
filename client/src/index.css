@@ -4,3 +4,13 @@
 * {
   font-family: "Outfit", sans-serif;
 }
+
+@theme {
+  --color-primary: #ccd34f;
+}
+
+@layer base {
+  h1 {
+    color: var(--color-primary);
+  }
+}
