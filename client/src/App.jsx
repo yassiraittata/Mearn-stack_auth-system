@@ -3,9 +3,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import NotFound from "./pages/NotFound.jsx";
 import Home from "./pages/Home.jsx";
+import Login from "./pages/Login.jsx";
+import EmailVerify from "./pages/EmailVerify.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 const routes = createBrowserRouter([
   { path: "/", element: <Home /> },
+  { path: "/login", element: <Login /> },
+  { path: "/email-verify", element: <EmailVerify /> },
+  { path: "/reset-password", element: <ResetPassword /> },
   { path: "*", element: <NotFound /> }, // catch-all route
 ]);
 
