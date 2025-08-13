@@ -31,18 +31,38 @@ function Login() {
     if (!hasMinLength(password, 6))
       return showErrorToast("Password should be at least 6 characters long!");
 
-    if (state === "sign up") {
-      const url = backendUrl + "/auth/register";
-      const body = { name, email, password };
+    try {
+      if (state === "sign up") {
+        const url = backendUrl + "/api/auth/register";
+        const body = { name, email, password };
 
-      const { data } = await axios.post(url, body);
+        const { data } = await axios.post(url, body);
 
-      if (data.success) {
-        setIsLoggedIn(true);
-        navigate("/");
+        console.log(data);
+
+        if (data.success) {
+          setIsLoggedIn(true);
+          navigate("/");
+        } else {
+          return showErrorToast(data.message);
+        }
       } else {
-        showErrorToast(data.message);
+        const url = backendUrl + "/api/auth/login";
+        const body = { email, password };
+
+        const { data } = await axios.post(url, body);
+
+        console.log("DATA", data);
+
+        if (data.success) {
+          setIsLoggedIn(true);
+          navigate("/");
+        } else {
+          return showErrorToast(data.message);
+        }
       }
+    } catch (e) {
+      showErrorToast(e.response.data.message);
     }
   }
 
