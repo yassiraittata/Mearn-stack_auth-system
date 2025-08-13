@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { showErrorToast } from "../utils/toast";
+import { hasMinLength, isValidEmail } from "../utils/validators";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,14 +14,18 @@ function Login() {
 
   function submitHandler(e) {
     e.preventDefault();
-    
+
     if (
       (state === "sign up" && !name.trim()) ||
       !email.trim() ||
       !password.trim()
     ) {
-      showErrorToast("All feilds are required!");
+      return showErrorToast("All feilds are required!");
     }
+
+    if (!isValidEmail(email)) return showErrorToast("Invalid Email");
+    if (!hasMinLength(password, 6))
+      return showErrorToast("Password should be at least 6 characters long!");
   }
 
   return (
