@@ -4,6 +4,7 @@ import { assets } from "../assets/assets";
 import { showErrorToast } from "../utils/toast";
 import { hasMinLength, isValidEmail } from "../utils/validators";
 import { AppContext } from "../context/AppContext";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,9 +14,9 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { backendUrl } = useContext(AppContext);
+  const { backendUrl, setIsLoggedIn } = useContext(AppContext);
 
-  function submitHandler(e) {
+  async function submitHandler(e) {
     e.preventDefault();
 
     if (
@@ -29,6 +30,20 @@ function Login() {
     if (!isValidEmail(email)) return showErrorToast("Invalid Email");
     if (!hasMinLength(password, 6))
       return showErrorToast("Password should be at least 6 characters long!");
+
+    if (state === "sign up") {
+      const url = backendUrl + "/auth/register";
+      const body = { name, email, password };
+
+      const { data } = await axios.post(url, body);
+
+      if (data.success) {
+        setIsLoggedIn(true);
+        navigate("/");
+      } else {
+        showErrorToast(data.message);
+      }
+    }
   }
 
   return (

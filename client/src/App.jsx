@@ -7,7 +7,7 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import EmailVerify from "./pages/EmailVerify.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
-import { AppContextProvider } from "./context/AppContext.js";
+import { AppContextProvider } from "./context/AppContextProvider.jsx";
 
 const routes = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -19,10 +19,10 @@ const routes = createBrowserRouter([
 
 const App = () => {
   return (
-    <AppContextProvider>
+    <>
       <ToastContainer />
       <RouterProvider router={routes} />;
-    </AppContextProvider>
+    </>
   );
 };
 
