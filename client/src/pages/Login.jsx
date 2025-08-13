@@ -21,16 +21,64 @@ function Login() {
             : "Login to your account"}
         </p>
         <form>
+          {state === "sign up" && (
+            <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5c] ">
+              <img src={assets.person_icon} alt="" />
+              <input
+                type="text"
+                placeholder="Full Name"
+                required
+                className="bg-transparent outline-none"
+              />
+            </div>
+          )}
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5c] ">
-            <img src={assets.person_icon} alt="" />
+            <img src={assets.mail_icon} alt="" />
             <input
-              type="text"
-              placeholder="Full Name"
+              type="email"
+              placeholder="Email"
               required
               className="bg-transparent outline-none"
             />
           </div>
+          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5c] ">
+            <img src={assets.lock_icon} alt="" />
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              className="bg-transparent outline-none"
+            />
+          </div>
+          <p className="mb-4 text-indigo-50 cursor-pointer">
+            Forgot password ?
+          </p>
+          <button className="w-full py-2.5 rounded-full cursor-pointer bg-gradient-to-r from-indigo-500 to-indigo-900 font-medium text-white first-letter:uppercase">
+            {state}
+          </button>
         </form>
+        {state === "sign up" && (
+          <p className="text-gray-400 text-center text-xs mt-4">
+            Already have an account?{" "}
+            <span
+              className="text-blue-400 cursor-pointer underline"
+              onClick={() => setState("login")}
+            >
+              Login here
+            </span>
+          </p>
+        )}
+        {state === "login" && (
+          <p className="text-gray-400 text-center text-xs mt-4">
+            Don't have an account?{" "}
+            <span
+              className="text-blue-400 cursor-pointer underline"
+              onClick={() => setState("sign up")}
+            >
+              Sign up
+            </span>
+          </p>
+        )}
       </div>
     </div>
   );
