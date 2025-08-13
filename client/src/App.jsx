@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import NotFound from "./pages/NotFound.jsx";
 import Home from "./pages/Home.jsx";
@@ -16,7 +17,12 @@ const routes = createBrowserRouter([
 ]);
 
 const App = () => {
-  return <RouterProvider router={routes} />;
+  return (
+    <>
+      <ToastContainer />
+      <RouterProvider router={routes} />;
+    </>
+  );
 };
 
 export default App;
