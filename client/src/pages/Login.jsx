@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { showErrorToast } from "../utils/toast";
 import { hasMinLength, isValidEmail } from "../utils/validators";
+import { AppContext } from "../context/AppContext";
 
 function Login() {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ function Login() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { backendUrl } = useContext(AppContext);
 
   function submitHandler(e) {
     e.preventDefault();
@@ -78,7 +81,10 @@ function Login() {
               className="bg-transparent outline-none"
             />
           </div>
-          <p className="mb-4 text-indigo-50 cursor-pointer">
+          <p
+            className="mb-4 text-indigo-50 cursor-pointer hover:text-blue-400 hover:underline"
+            onClick={() => navigate("/reset-password")}
+          >
             Forgot password ?
           </p>
           <button className="w-full py-2.5 rounded-full cursor-pointer bg-gradient-to-r from-indigo-500 to-indigo-900 font-medium text-white first-letter:uppercase">
