@@ -106,7 +106,7 @@ export const logout = (req, res, next) => {
 };
 
 export const sendVerifyOtp = async (req, res, next) => {
-  const { userId } = req.body;
+  const { userId } = req;
 
   const user = await UserModel.findById(userId);
 
@@ -139,7 +139,8 @@ export const sendVerifyOtp = async (req, res, next) => {
 };
 
 export const verfyEmail = async (req, res, next) => {
-  const { userId, otp } = req.body;
+  const { otp } = req.body;
+  const { userId } = req;
 
   if (!userId || !otp) {
     return next(

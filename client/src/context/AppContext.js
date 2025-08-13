@@ -6,4 +6,5 @@ export const AppContext = createContext({
   setIsLoggedIn: () => {},
   userData: null,
   setUserData: () => {},
+  getUserData: () => {},
 });

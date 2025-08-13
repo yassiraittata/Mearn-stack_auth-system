@@ -5,9 +5,11 @@ import createError from "http-errors";
 const userAuth = (req, res, next) => {
   const token = req.cookies?.token;
 
+  console.log(token);
+
   if (!token) {
     return next(
-      createError(401, "Not Authorised. Make sure you are logged in!")
+      createError(403, "Not Authorised. Make sure you are logged in!")
     );
   }
 
@@ -15,11 +17,11 @@ const userAuth = (req, res, next) => {
 
   if (!decoded || !decoded.id) {
     return next(
-      createError(401, "Not Authorised. Make sure you are logged in!")
+      createError(403, "Not Authorised. Make sure you are logged in!")
     );
   }
 
-  req.body.userId = decoded.id;
+  req.userId = decoded.id;
   next();
 };
 

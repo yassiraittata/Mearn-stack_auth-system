@@ -14,7 +14,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { backendUrl, setIsLoggedIn } = useContext(AppContext);
+  const { backendUrl, setIsLoggedIn, getUserData } = useContext(AppContext);
 
   async function submitHandler(e) {
     e.preventDefault();
@@ -42,6 +42,7 @@ function Login() {
 
         if (data.success) {
           setIsLoggedIn(true);
+          getUserData();
           navigate("/");
         } else {
           return showErrorToast(data.message);
@@ -50,12 +51,15 @@ function Login() {
         const url = backendUrl + "/api/auth/login";
         const body = { email, password };
 
-        const { data } = await axios.post(url, body);
+        const { data } = await axios.post(url, body, {
+          withCredentials: true,
+        });
 
         console.log("DATA", data);
 
         if (data.success) {
           setIsLoggedIn(true);
+          getUserData();
           navigate("/");
         } else {
           return showErrorToast(data.message);
