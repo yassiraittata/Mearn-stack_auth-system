@@ -5,20 +5,14 @@ import createError from "http-errors";
 const userAuth = (req, res, next) => {
   const token = req.cookies?.token;
 
-  console.log(token);
-
   if (!token) {
-    return next(
-      createError(403, "Not Authorised. Make sure you are logged in!")
-    );
+    return res.json({ success: false });
   }
 
   const decoded = jwt.verify(token, env.JWT_SECRET);
 
   if (!decoded || !decoded.id) {
-    return next(
-      createError(403, "Not Authorised. Make sure you are logged in!")
-    );
+    return res.json({ success: false });
   }
 
   req.userId = decoded.id;

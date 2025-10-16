@@ -7,4 +7,5 @@ export const AppContext = createContext({
   userData: null,
   setUserData: () => {},
   getUserData: () => {},
+  getAuthState: () => {},
 });

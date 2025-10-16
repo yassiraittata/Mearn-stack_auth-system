@@ -32,6 +32,7 @@ function Login() {
       return showErrorToast("Password should be at least 6 characters long!");
 
     try {
+      axios.defaults.withCredentials = true;
       if (state === "sign up") {
         const url = backendUrl + "/api/auth/register";
         const body = { name, email, password };
@@ -45,7 +46,9 @@ function Login() {
           getUserData();
           navigate("/");
         } else {
-          return showErrorToast(data.message);
+          return showErrorToast(
+            data.message || "Something went wrong. Please try again!"
+          );
         }
       } else {
         const url = backendUrl + "/api/auth/login";
