@@ -18,6 +18,16 @@ function EmailVerify() {
     }
   };
 
+  const handlePaste = (e) => {
+    const paste = e.clipboardData.getData("text");
+    const pasteArray = paste.split("");
+    pasteArray.forEach((el, index) => {
+      if (inputRefs.current[index]) {
+        inputRefs.current[index].value = el;
+      }
+    });
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
       <img
@@ -34,7 +44,7 @@ function EmailVerify() {
           Enter the 6-digits code sent to your email id.
         </p>
 
-        <div className="flex justify-between mb-8">
+        <div className="flex justify-between mb-8" onPaste={handlePaste}>
           {Array(6)
             .fill(0)
             .map((_, index) => {
