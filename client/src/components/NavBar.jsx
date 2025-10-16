@@ -3,12 +3,30 @@ import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
-import { showErrorToast } from "../utils/toast";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 function NavBar() {
   const navigate = useNavigate();
   const { userData, backendUrl, setUserData, setIsLoggedIn } =
     useContext(AppContext);
+
+  const sendVerification = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const url = backendUrl + "/api/auth/send-verify-otp";
+
+      const { data } = await axios.post(url);
+
+      if (data.success) {
+        navigate('/email-verify"');
+        showSuccessToast(data.message);
+      } else {
+        showErrorToast(data.error || "something went wrong");
+      }
+    } catch (error) {
+      showErrorToast(error.message || "something went wrong");
+    }
+  };
 
   const logout = async () => {
     try {
@@ -17,9 +35,6 @@ function NavBar() {
       const url = backendUrl + "/api/auth/logout";
 
       const { data } = await axios.post(url);
-
-      console.log("DATA ", data);
-
       if (data?.success) {
         setIsLoggedIn(false);
         setUserData(null);
@@ -45,7 +60,10 @@ function NavBar() {
           <div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10">
             <ul className="list-none m-0 bg-gray-100 text-sm  min-w-28 p-2">
               {!userData.isAccountVerified && (
-                <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer">
+                <li
+                  className="py-1 px-2 hover:bg-gray-200 cursor-pointer"
+                  onClick={sendVerification}
+                >
                   Verify email
                 </li>
               )}
