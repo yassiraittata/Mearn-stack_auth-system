@@ -1,10 +1,16 @@
-import React, { useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
 
 function EmailVerify() {
   const navigate = useNavigate();
   const inputRefs = useRef([]);
+  const { backendUrl, getUserData, isLoggedIn, userData } =
+    useContext(AppContext);
+  axios.defaults.withCredentials = true;
 
   const handleInput = (e, index) => {
     if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
@@ -28,6 +34,35 @@ function EmailVerify() {
     });
   };
 
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      const otpArray = inputRefs.current.map((e) => e.value);
+      const otp = otpArray.join("");
+
+      const url = backendUrl + "/api/auth/verify-account";
+
+      const { data } = await axios.post(url, { otp });
+
+      if (data.success) {
+        showSuccessToast(data.message);
+        getUserData();
+        navigate("/");
+      } else {
+        showErrorToast(data.message || "something went wrong");
+      }
+    } catch (error) {
+      showErrorToast(error.message || "something went wrong");
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn && userData && userData.isAccountVerified) {
+      navigate("/");
+    }
+  }, [isLoggedIn, userData, navigate]);
+
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
       <img
@@ -36,7 +71,10 @@ function EmailVerify() {
         onClick={() => navigate("/")}
       />
 
-      <form className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
+      <form
+        className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
+        onSubmit={onSubmitHandler}
+      >
         <h1 className="text-white text-2xl font-semibold text-center mb-4">
           Email verify OTP
         </h1>
