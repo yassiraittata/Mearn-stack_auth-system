@@ -3,6 +3,7 @@ import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -10,12 +11,12 @@ function ResetPassword() {
   const [password, setPassword] = useState();
 
   const [isEmailSent, setIsEmailSent] = useState(false);
-  const [otp, setOtp] = useState(0);
   const [isotpSubmitted, setIsotpSubmitted] = useState(false);
 
+  const [otp, setOtp] = useState(0);
+
   const inputRefs = useRef([]);
-  const { backendUrl, getUserData, isLoggedIn, userData } =
-    useContext(AppContext);
+  const { backendUrl } = useContext(AppContext);
   axios.defaults.withCredentials = true;
 
   const handleInput = (e, index) => {
@@ -40,7 +41,57 @@ function ResetPassword() {
     });
   };
 
-  const onSubmitHandler = () => {};
+  const onSubmitEmail = async (e) => {
+    e.preventDefault();
+
+    try {
+      const url = backendUrl + "/api/auth/send-reset-otp";
+
+      const { data } = await axios.post(url, { email });
+
+      if (data.success) {
+        showSuccessToast(data.message);
+        setIsEmailSent(true);
+      } else {
+        showErrorToast(data.message || "something went wrong");
+      }
+    } catch (error) {
+      showErrorToast(error.message || "something went wrong");
+    }
+  };
+
+  const onSubmitOTP = async (e) => {
+    e.preventDefault();
+
+    const otpArray = inputRefs.current.map((e) => e.value);
+    const otp = otpArray.join("");
+
+    setOtp(otp);
+    setIsotpSubmitted(true);
+  };
+
+  const onSubmitNewPassword = async (e) => {
+    e.preventDefault();
+
+    try {
+      const url = backendUrl + "/api/auth/send-reset-otp";
+
+      const { data } = await axios.post(url, {
+        email,
+        otp,
+        newPassword: password,
+      });
+
+      if (data.success) {
+        showSuccessToast(data.message);
+        navigate("/login");
+      } else {
+        showErrorToast(data.message || "something went wrong");
+      }
+    } catch (error) {
+      showErrorToast(error.message || "something went wrong");
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
@@ -52,7 +103,7 @@ function ResetPassword() {
       {!isEmailSent && (
         <form
           className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
-          onSubmit={onSubmitHandler}
+          onSubmit={onSubmitEmail}
         >
           <h1 className="text-white text-2xl font-semibold text-center mb-4">
             Reset password
@@ -81,7 +132,7 @@ function ResetPassword() {
       {!isotpSubmitted && isEmailSent && (
         <form
           className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
-          onSubmit={onSubmitHandler}
+          onSubmit={onSubmitOTP}
         >
           <h1 className="text-white text-2xl font-semibold text-center mb-4">
             Reset password OTP
@@ -117,7 +168,7 @@ function ResetPassword() {
       {isotpSubmitted && isEmailSent && (
         <form
           className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
-          onSubmit={onSubmitHandler}
+          onSubmit={onSubmitNewPassword}
         >
           <h1 className="text-white text-2xl font-semibold text-center mb-4">
             New password
